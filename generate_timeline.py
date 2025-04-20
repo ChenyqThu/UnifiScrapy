@@ -30,19 +30,19 @@ logger = logging.getLogger(__name__)
 PRODUCT_LINE_MAPPING = {
     # ===== Platform 平台 =====
     'unifi-os': ['unifi os', 'unifi console', 'dream os', 'udm os', 'dream machine os', 'unifi os console', 'uisp os'],
-    'unifi-network-app': ['unifi network application', 'unifi network app', 'controller', 'network management', 'network controller', 'uap controller', 'unifi sdn'],
-    'unifi-protect-app': ['unifi protect application', 'unifi protect app', 'unifi protect server', 'protect controller', 'video controller'],
+    'unifi-network-app': ['unifi network application', 'network controller', 'network management','uap controller', 'unifi sdn'],
+    'unifi-protect-app': ['unifi protect application', 'unifi protect server', 'protect controller', 'video controller'],
     'unifi-access-app': ['access application', 'access app', 'access controller', 'door controller', 'identity controller'],
-    'unifi-talk-app': ['talk application', 'talk app', 'talk controller', 'voice controller', 'phone controller'],
+    'unifi-talk-app': ['talk application', 'talk app', 'talk controller', 'voip controller', 'voice controller', 'phone controller'],
     'unifi-led-app': ['led application', 'led controller', 'led app', 'lighting controller'],
     'unifi-connect-app': ['connect application', 'connect app', 'connect controller', 'sense controller', 'iot controller'],
     'unifi-drive-app': ['drive application', 'drive app', 'storage controller', 'backup controller'],
     'unifi-platform-other': ['security advisory', 'security bulletin', 'advisory bulletin', 'platform advisory'],
     
     # ===== 设备产品线 =====
-    'unifi-switch': ['switch', 'usw', 'flex switch', 'enterprise switch', 'poe switch', 'switch firmware', 'usw firmware'],
-    'unifi-gateway': ['gateway', 'usg', 'security gateway', 'routing', 'dream router', 'dream machine', 'udr', 'udm', 'lte', 'unifi lte', 'udm firmware', 'dream firmware', 'gateway firmware', 'usg firmware'],
-    'unifi-ap': ['access point', 'uap', 'wifi', 'wireless', 'u6', 'nanohd', 'flexhd', 'ac-lite', 'ac-pro', 'access point firmware', 'uap firmware', 'ap firmware'],
+    'unifi-switch': ['switch', 'campus', 'aggregation', 'usw', 'flex switch', 'enterprise switch', 'poe switch', 'switch firmware', 'usw firmware'],
+    'unifi-gateway': ['gateway', 'usg', 'security gateway', 'routing', 'cable internet', 'mobile routers', 'mobile router', 'dream router', 'dream machine', 'udr', 'udm', 'lte', 'unifi lte', 'udm firmware', 'dream firmware', 'gateway firmware', 'usg firmware'],
+    'unifi-ap': ['access point', 'uap', 'wifi', 'wireless', 'u6', 'nanohd', 'flexhd', 'ac-lite', 'ac-pro', 'access point firmware', 'uap firmware', 'ap firmware','bridge'],
     'unifi-cloud': ['cloud key', 'uck', 'cloud gateway', 'console', 'ck', 'cloudkey firmware'],
     'unifi-protect': ['protect', 'camera', 'g4', 'g3', 'doorbell', 'viewport', 'nvr', 'unvr', 'video', 'camera firmware', 'g4 firmware', 'g3 firmware', 'doorbell firmware', 'viewport firmware'],
     'unifi-access': ['access', 'door', 'smart lock', 'hub', 'identity', 'access hub firmware', 'door firmware', 'smart lock firmware'],
@@ -51,16 +51,21 @@ PRODUCT_LINE_MAPPING = {
     'unifi-connect': ['connect', 'sense', 'sensor', 'uid', 'sense firmware', 'sensor firmware'],
     
     # ===== APP & Tools 应用与工具 =====
-    'unifi-app': ['unifi app', 'unifi ios', 'unifi android', 'unifi mobile'],
-    'protect-app': ['protect app', 'protect ios', 'protect android', 'protect mobile'],
+    'protect-app': ['protect app', 'protect ios', 'protect android','unifi play', 'unifi play ios','play android', 'play ios', 'play app'],
+    'access-app': ['access app', 'access ios', 'access android'],
+    'connect-app': ['connect app', 'connect ios', 'connect android'],
+    'verify-app': ['verify app', 'verify ios', 'verify android'],
+    'portal-app': ['portal app', 'portal ios', 'portal android'],
+    'identity-endpoint': ['identity endpoint', 'identity endpoint ios', 'identity endpoint android'],
     'wifiman-app': ['wifiman app', 'wifiman ios', 'wifiman android', 'WiFiman Desktop', 'wifiman for desktop'],
+    'unifi-app': ['unifi app', 'unifi ios', 'unifi android'],
     'design-center': ['unifi design center', 'unifi innerspace'],
     
     # ===== 其他产品线 =====
     'airmax': ['airmax', 'nanostation', 'litebeam', 'powerbeam', 'rocket', 'prism', 'aircube', '60ghz'],
     'airfiber': ['airfiber', 'ltu', 'gigabeam'],
     'edgemax': ['edgerouter', 'edgeswitch', 'edgepoint', 'edgemax'],
-    'amplifi': ['amplifi', 'alien', 'mesh'],
+    'amplifi': ['amplifi', 'alien', 'mesh', 'poweramp'],
     'ufiber': ['ufiber', 'fiber'],
     'uisp': ['uisp', 'unms', 'isp design', 'isp-app', 'uisp design center','isp design center'],
     
@@ -79,7 +84,7 @@ PRODUCT_LINE_GROUPS = {
         'unifi-access', 'unifi-talk', 'unifi-led', 'unifi-connect'
     ],
     'APP & Tools': [
-        'unifi-app', 'protect-app', 'wifiman-app', 'design-center'
+        'unifi-app', 'protect-app', 'wifiman-app', 'design-center', 'access-app', 'connect-app', 'verify-app', 'portal-app', 'identity-endpoint'
     ],
     'Other Products': [
         'airmax', 'airfiber', 'edgemax', 'amplifi', 'ufiber', 'uisp', 'unifi-other'
@@ -95,7 +100,7 @@ PRODUCT_LINE_ORDER = [
     'unifi-switch', 'unifi-gateway', 'unifi-ap', 'unifi-cloud', 'unifi-protect',
     'unifi-access', 'unifi-talk', 'unifi-led', 'unifi-connect',
     # APP & Tools
-    'unifi-app', 'protect-app', 'wifiman-app', 'design-center',
+    'unifi-app', 'protect-app', 'wifiman-app', 'design-center', 'access-app', 'connect-app', 'verify-app', 'portal-app', 'identity-endpoint'
     # Other Products
     'airmax', 'airfiber', 'edgemax', 'amplifi', 'ufiber', 'uisp', 'unifi-other'
 ]
@@ -127,6 +132,11 @@ PRODUCT_LINE_LABELS = {
     'protect-app': 'Protect APP',
     'wifiman-app': 'WiFiMan APP',
     'design-center': 'Design Center',
+    'access-app': 'Access APP',
+    'connect-app': 'Connect APP',
+    'verify-app': 'Verify APP',
+    'portal-app': 'Portal APP',
+    'identity-endpoint': 'Identity Endpoint',
     # Other Products
     'airmax': 'airMAX',
     'airfiber': 'airFiber',
@@ -139,11 +149,18 @@ PRODUCT_LINE_LABELS = {
 
 # 版本类型展示名称
 VERSION_TYPE_LABELS = {
+    # 常规版本类型
     'GA': '正式版',
     'RC': '候选版',
     'Beta': '测试版',
     'Alpha': '内测版',
-    'other': '其他版本'
+    'other': '其他版本',
+    
+    # APP平台类型
+    'iOS': 'iOS版',
+    'Android': 'Android版',
+    'Desktop': '桌面版',
+    'Other': '其他平台'
 }
 
 class ImprovedTimelineGenerator:
@@ -215,10 +232,36 @@ class ImprovedTimelineGenerator:
             # 调试日志
             logger.debug(f"处理产品: {product_name}, 标签: {tags}")
             
+            # 特殊处理：识别旧版本的UniFi控制器（5.x.x系列）
+            if ('unifi' in product_name.lower() and 
+                re.search(r'\b5\.\d+\.\d+\b', version) and 
+                ('stable' in all_text or 'controller' in all_text)):
+                return 'unifi-network-app'
+            
             # 先检查是不是UniFi OS - 这是最高优先级
             if ('unifi os' in all_text or 'dream os' in all_text or 'udm os' in all_text or 'console os' in all_text) and not 'ios' in all_text:
                 return 'unifi-os'
             
+            # 检查是否为移动应用 (APP) - 高优先级
+            # 移动应用识别
+            if 'ios' in all_text or 'iphone' in all_text or 'ipad' in all_text or 'android' in all_text or 'mobile app' in all_text:
+                if 'play' in all_text or 'protect' in all_text:
+                    return 'protect-app'
+                elif 'wifiman' in all_text:
+                    return 'wifiman-app'
+                elif 'access' in all_text:
+                    return 'access-app'
+                elif 'connect' in all_text:
+                    return 'connect-app'
+                elif 'verify' in all_text:
+                    return 'verify-app'
+                elif 'portal' in all_text:
+                    return 'portal-app'
+                elif 'identity' in all_text:
+                    return 'identity-endpoint'
+                elif 'unifi' in all_text:
+                    return 'unifi-app'
+
             # 直接从标签中获取产品线（精确匹配）
             primary_tag = None
             for tag in tags:
@@ -280,25 +323,18 @@ class ImprovedTimelineGenerator:
                         if product_line == 'unifi-os' and 'ios' in all_text and not keyword.lower() in all_text:
                             continue
                         
-                        # 特殊情况处理：移动应用程序识别
-                        if 'ios' in all_text or 'android' in all_text:
-                            if product_line == 'unifi-app' or product_line == 'protect-app' or product_line == 'wifiman-app':
-                                return product_line
-                        
                         return product_line
-            
-            # 从应用类型和设备类型进一步判断
-            # 检查是否为移动应用
-            if 'ios' in all_text or 'android' in all_text or 'mobile app' in all_text:
-                if 'protect' in all_text:
-                    return 'protect-app'
-                elif 'wifiman' in all_text:
-                    return 'wifiman-app'
-                elif 'unifi' in all_text:
-                    return 'unifi-app'
             
             # 产品线标识检查
             if 'unifi' in all_text:
+                # Play相关的产品归类到protect-app
+                if 'play' in all_text:
+                    return 'protect-app'
+                
+                # 检查是否是旧版本UniFi控制器
+                if re.search(r'(unifi.*controller|controller.*unifi|network.*controller)', all_text) or re.search(r'\bunifi\s+\d+\.\d+\.\d+', all_text):
+                    return 'unifi-network-app'
+                
                 # 如果包含UniFi标识，但无法精确匹配，归为其他UniFi产品
                 return 'unifi-other'
             elif 'edgemax' in all_text or 'edgerouter' in all_text or 'edgeswitch' in all_text:
@@ -321,7 +357,27 @@ class ImprovedTimelineGenerator:
             return 'other'
     
     def determine_version_type(self, release):
-        """确定版本类型(GA/RC/Beta/Alpha等)"""
+        """确定版本类型(GA/RC/Beta/Alpha等)或移动应用平台类型"""
+        # 获取产品线
+        product_line = self.determine_product_line(release)
+        
+        # 对于APP类产品，返回平台类型而非版本类型
+        if product_line in ['unifi-app', 'protect-app', 'wifiman-app', 'access-app', 'connect-app', 'verify-app', 'portal-app', 'identity-endpoint']:
+            all_text = (release.get('product_name', '') + ' ' + 
+                       release.get('firmware_type', '') + ' ' + 
+                       ' '.join(json.loads(release.get('tags', '[]')) if isinstance(release.get('tags', '[]'), str) else release.get('tags', '[]'))).lower()
+            
+            # 确定平台类型
+            if 'ios' in all_text or 'iphone' in all_text or 'ipad' in all_text:
+                return 'iOS'
+            elif 'android' in all_text:
+                return 'Android'
+            elif 'desktop' in all_text or 'windows' in all_text or 'mac' in all_text:
+                return 'Desktop'
+            else:
+                return 'Other'  # 默认平台类型
+        
+        # 非APP产品使用正常的版本类型判断
         # 首先检查stage字段
         stage = release.get('stage', '').lower()
         
@@ -792,151 +848,301 @@ class ImprovedTimelineGenerator:
                         <div class="px-4 pt-4">
                             <div class="border-b border-gray-200">
                                 <nav class="flex flex-wrap -mb-px">
-                                    {% for version_type in ['GA', 'RC', 'Beta', 'Alpha'] %}
-                                        {% if version_type in organized_data[product_line] %}
-                                            <button 
-                                                class="version-tab mr-6 py-2 px-1 border-b-2 font-medium text-sm focus:outline-none"
-                                                data-product-line="{{ product_line }}" 
-                                                data-version-type="{{ version_type }}">
-                                                {{ version_type_labels[version_type] }}
-                                                <span class="ml-1 bg-gray-100 px-2 py-0.5 rounded-full text-xs version-count">
-                                                    {{ product_line_stats[product_line][version_type] }}
-                                                </span>
-                                            </button>
-                                        {% endif %}
-                                    {% endfor %}
+                                    {% if product_line in ['unifi-app', 'protect-app', 'wifiman-app', 'access-app', 'connect-app', 'verify-app', 'portal-app', 'identity-endpoint'] %}
+                                        <!-- 针对APP类产品显示平台类型 -->
+                                        {% for version_type in ['iOS', 'Android', 'Desktop', 'Other'] %}
+                                            {% if version_type in organized_data[product_line] %}
+                                                <button 
+                                                    class="version-tab mr-6 py-2 px-1 border-b-2 font-medium text-sm focus:outline-none"
+                                                    data-product-line="{{ product_line }}" 
+                                                    data-version-type="{{ version_type }}">
+                                                    {{ version_type_labels[version_type] }}
+                                                    <span class="ml-1 bg-gray-100 px-2 py-0.5 rounded-full text-xs version-count">
+                                                        {{ product_line_stats[product_line][version_type] }}
+                                                    </span>
+                                                </button>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <!-- 针对非APP产品显示版本类型 -->
+                                        {% for version_type in ['GA', 'RC', 'Beta', 'Alpha'] %}
+                                            {% if version_type in organized_data[product_line] %}
+                                                <button 
+                                                    class="version-tab mr-6 py-2 px-1 border-b-2 font-medium text-sm focus:outline-none"
+                                                    data-product-line="{{ product_line }}" 
+                                                    data-version-type="{{ version_type }}">
+                                                    {{ version_type_labels[version_type] }}
+                                                    <span class="ml-1 bg-gray-100 px-2 py-0.5 rounded-full text-xs version-count">
+                                                        {{ product_line_stats[product_line][version_type] }}
+                                                    </span>
+                                                </button>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
                                 </nav>
                             </div>
                         </div>
                         
                         <!-- 时间轴内容 -->
-                        {% for version_type in ['GA', 'RC', 'Beta', 'Alpha'] %}
-                            {% if version_type in organized_data[product_line] %}
-                                <div class="version-content p-4" 
-                                     id="content-{{ product_line }}-{{ version_type }}"
-                                     style="display: {% if loop.first %}block{% else %}none{% endif %};">
-                                    
-                                    <!-- 年份分组 -->
-                                    {% for year in organized_data[product_line][version_type]|sort(reverse=true) %}
-                                        <div class="mb-6">
-                                            <div class="year-header cursor-pointer flex items-center bg-gray-50 p-3 rounded-lg mb-2 hover:bg-gray-100 transition duration-200">
-                                                <svg class="year-arrow w-5 h-5 mr-2 text-unifi-blue transform transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                                </svg>
-                                                <h3 class="text-lg font-semibold">{{ year }}</h3>
-                                                <span class="ml-2 bg-unifi-blue text-white px-2 py-0.5 rounded-full text-xs">
-                                                    {{ organized_data[product_line][version_type][year]|length }}
-                                                </span>
-                                            </div>
-                                            
-                                            <div class="year-content ml-2">
-                                                <!-- 发布时间轴 -->
-                                                <div class="relative border-l-4 border-unifi-blue pl-8 ml-3">
-                                                    {% for release in organized_data[product_line][version_type][year] %}
-                                                        <div class="relative mb-8">
-                                                            <!-- 时间轴节点 -->
-                                                            <div class="absolute -left-11 mt-3.5">
-                                                                <div class="w-5 h-5 rounded-full bg-unifi-blue border-4 border-white shadow"></div>
-                                                            </div>
-                                                            
-                                                            <!-- 发布卡片 -->
-                                                            <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition duration-200 overflow-hidden">
-                                                                <div class="border-b border-gray-100 px-4 py-3 flex justify-between items-center bg-gray-50">
-                                                                    <div>
-                                                                        {% if release.is_merged %}
-                                                                            <h4 class="font-semibold text-lg">{{ release.display_title }}</h4>
-                                                                        {% else %}
-                                                                            <h4 class="font-semibold text-lg">{{ release.product_name }}</h4>
-                                                                        {% endif %}
-                                                                        <div class="text-sm text-gray-500">{{ release.date }}</div>
-                                                                    </div>
-                                                                    <div class="flex items-center">
-                                                                        <span class="bg-unifi-blue text-white rounded-full px-3 py-1 text-xs font-medium">
-                                                                            {{ release.version }}
-                                                                        </span>
-                                                                    </div>
+                        {% if product_line in ['unifi-app', 'protect-app', 'wifiman-app', 'access-app', 'connect-app', 'verify-app', 'portal-app', 'identity-endpoint'] %}
+                            <!-- APP产品按平台类型显示内容 -->
+                            {% for version_type in ['iOS', 'Android', 'Desktop', 'Other'] %}
+                                {% if version_type in organized_data[product_line] %}
+                                    <div class="version-content p-4" 
+                                        id="content-{{ product_line }}-{{ version_type }}"
+                                        style="display: {% if loop.first %}block{% else %}none{% endif %};">
+                                        
+                                        <!-- 年份分组 -->
+                                        {% for year in organized_data[product_line][version_type]|sort(reverse=true) %}
+                                            <div class="mb-6">
+                                                <div class="year-header cursor-pointer flex items-center bg-gray-50 p-3 rounded-lg mb-2 hover:bg-gray-100 transition duration-200">
+                                                    <svg class="year-arrow w-5 h-5 mr-2 text-unifi-blue transform transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    <h3 class="text-lg font-semibold">{{ year }}</h3>
+                                                    <span class="ml-2 bg-unifi-blue text-white px-2 py-0.5 rounded-full text-xs">
+                                                        {{ organized_data[product_line][version_type][year]|length }}
+                                                    </span>
+                                                </div>
+                                                
+                                                <div class="year-content ml-2">
+                                                    <!-- 发布时间轴 -->
+                                                    <div class="relative border-l-4 border-unifi-blue pl-8 ml-3">
+                                                        {% for release in organized_data[product_line][version_type][year] %}
+                                                            <div class="relative mb-8">
+                                                                <!-- 时间轴节点 -->
+                                                                <div class="absolute -left-11 mt-3.5">
+                                                                    <div class="w-5 h-5 rounded-full bg-unifi-blue border-4 border-white shadow"></div>
                                                                 </div>
                                                                 
-                                                                <div class="p-4">
-                                                                    {% if release.compatible_devices and release.compatible_devices|length > 1 %}
-                                                                        <div class="mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
-                                                                            <div class="text-sm font-medium text-unifi-blue mb-1">适配设备 ({{ release.compatible_devices|length }}):</div>
-                                                                            <div class="flex flex-wrap gap-1">
-                                                                                {% for device in release.compatible_devices %}
-                                                                                    <span 
-                                                                                        class="device-selector bg-white text-gray-800 text-xs px-2 py-1 rounded border cursor-pointer transition-colors duration-200 {% if loop.first %}border-unifi-blue bg-blue-50 selected-device{% else %}border-gray-200 hover:border-unifi-blue hover:bg-blue-50{% endif %}"
-                                                                                        data-device-index="{{ loop.index0 }}"
-                                                                                        data-release-id="{{ release.product_line }}-{{ release.version_type }}-{{ release.year }}-{{ release.version|replace('.', '-') }}">
-                                                                                        {{ device }}
-                                                                                    </span>
+                                                                <!-- 发布卡片 -->
+                                                                <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition duration-200 overflow-hidden">
+                                                                    <div class="border-b border-gray-100 px-4 py-3 flex justify-between items-center bg-gray-50">
+                                                                        <div>
+                                                                            {% if release.is_merged %}
+                                                                                <h4 class="font-semibold text-lg">{{ release.display_title }}</h4>
+                                                                            {% else %}
+                                                                                <h4 class="font-semibold text-lg">{{ release.product_name }}</h4>
+                                                                            {% endif %}
+                                                                            <div class="text-sm text-gray-500">{{ release.date }}</div>
+                                                                        </div>
+                                                                        <div class="flex items-center">
+                                                                            <span class="bg-unifi-blue text-white rounded-full px-3 py-1 text-xs font-medium">
+                                                                                {{ release.version }}
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="p-4">
+                                                                        {% if release.compatible_devices and release.compatible_devices|length > 1 %}
+                                                                            <div class="mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                                                                                <div class="text-sm font-medium text-unifi-blue mb-1">适配设备 ({{ release.compatible_devices|length }}):</div>
+                                                                                <div class="flex flex-wrap gap-1">
+                                                                                    {% for device in release.compatible_devices %}
+                                                                                        <span 
+                                                                                            class="device-selector bg-white text-gray-800 text-xs px-2 py-1 rounded border cursor-pointer transition-colors duration-200 {% if loop.first %}border-unifi-blue bg-blue-50 selected-device{% else %}border-gray-200 hover:border-unifi-blue hover:bg-blue-50{% endif %}"
+                                                                                            data-device-index="{{ loop.index0 }}"
+                                                                                            data-release-id="{{ release.product_line }}-{{ release.version_type }}-{{ release.year }}-{{ release.version|replace('.', '-') }}">
+                                                                                            {{ device }}
+                                                                                        </span>
+                                                                                    {% endfor %}
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                        
+                                                                        {% if release.is_merged and release.combined_notes %}
+                                                                            <div class="mb-4 text-sm text-gray-700">
+                                                                                <div class="font-medium text-lg mb-2">版本说明</div>
+                                                                                
+                                                                                {% for note_entry in release.combined_notes %}
+                                                                                    <div class="release-note-content mb-4 bg-blue-50 p-3 rounded-lg {% if not loop.first %}hidden{% endif %}"
+                                                                                         data-device-index="{{ loop.index0 }}"
+                                                                                         data-release-id="{{ release.product_line }}-{{ release.version_type }}-{{ release.year }}-{{ release.version|replace('.', '-') }}">
+                                                                                        <div class="device-name font-semibold text-unifi-blue mb-2">{{ release.compatible_devices[loop.index0] }}</div>
+                                                                                        <div class="whitespace-pre-line">{{ note_entry.notes }}</div>
+                                                                                    </div>
                                                                                 {% endfor %}
                                                                             </div>
-                                                                        </div>
-                                                                    {% endif %}
-                                                                    
-                                                                    {% if release.is_merged and release.combined_notes %}
-                                                                        <div class="mb-4 text-sm text-gray-700">
-                                                                            <div class="font-medium text-lg mb-2">版本说明</div>
-                                                                            
-                                                                            {% for note_entry in release.combined_notes %}
-                                                                                <div class="release-note-content mb-4 bg-blue-50 p-3 rounded-lg {% if not loop.first %}hidden{% endif %}"
-                                                                                     data-device-index="{{ loop.index0 }}"
-                                                                                     data-release-id="{{ release.product_line }}-{{ release.version_type }}-{{ release.year }}-{{ release.version|replace('.', '-') }}">
-                                                                                    <div class="device-name font-semibold text-unifi-blue mb-2">{{ release.compatible_devices[loop.index0] }}</div>
-                                                                                    <div class="whitespace-pre-line">{{ note_entry.notes }}</div>
-                                                                                </div>
-                                                                            {% endfor %}
-                                                                        </div>
-                                                                    {% elif release.notes %}
-                                                                        <div class="mb-4 text-sm text-gray-700 release-notes">
-                                                                            {{ release.notes|truncate(300) }}
-                                                                            {% if release.notes|length > 300 %}
-                                                                                <button class="text-unifi-blue hover:text-unifi-darkblue expand-notes">显示更多</button>
-                                                                                <div class="hidden full-notes mt-2">
-                                                                                    {{ release.notes }}
-                                                                                </div>
-                                                                            {% endif %}
-                                                                        </div>
-                                                                    {% endif %}
-                                                                    
-                                                                    {% if release.download_links or release.source_urls %}
-                                                                        <div class="flex flex-wrap gap-2 mt-3">
-                                                                            {% if release.source_urls and release.source_urls|length > 0 %}
-                                                                                {% for url in release.source_urls %}
-                                                                                    {% if url %}
-                                                                                    <a href="{{ url }}" target="_blank" rel="noopener" 
-                                                                                       class="inline-flex items-center text-xs font-medium text-green-600 hover:text-green-800 border border-green-600 hover:bg-green-50 rounded px-2 py-1 transition duration-200">
+                                                                        {% elif release.notes %}
+                                                                            <div class="mb-4 text-sm text-gray-700 release-notes">
+                                                                                {{ release.notes|truncate(300) }}
+                                                                                {% if release.notes|length > 300 %}
+                                                                                    <button class="text-unifi-blue hover:text-unifi-darkblue expand-notes">显示更多</button>
+                                                                                    <div class="hidden full-notes mt-2">
+                                                                                        {{ release.notes }}
+                                                                                    </div>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        {% endif %}
+                                                                        
+                                                                        {% if release.download_links or release.source_urls %}
+                                                                            <div class="flex flex-wrap gap-2 mt-3">
+                                                                                {% if release.source_urls and release.source_urls|length > 0 %}
+                                                                                    {% for url in release.source_urls %}
+                                                                                        {% if url %}
+                                                                                        <a href="{{ url }}" target="_blank" rel="noopener" 
+                                                                                           class="inline-flex items-center text-xs font-medium text-green-600 hover:text-green-800 border border-green-600 hover:bg-green-50 rounded px-2 py-1 transition duration-200">
+                                                                                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                                                                                            </svg>
+                                                                                            {% if release.source_urls|length > 1 %}原帖 {{ loop.index }}{% else %}查看原帖{% endif %}
+                                                                                        </a>
+                                                                                        {% endif %}
+                                                                                    {% endfor %}
+                                                                                {% endif %}
+                                                                                
+                                                                                {% for link in release.download_links %}
+                                                                                    <a href="{{ link.url }}" target="_blank" rel="noopener" 
+                                                                                       class="inline-flex items-center text-xs font-medium text-unifi-blue hover:text-unifi-darkblue border border-unifi-blue hover:bg-unifi-blue/5 rounded px-2 py-1 transition duration-200">
                                                                                         <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                                                                                         </svg>
-                                                                                        {% if release.source_urls|length > 1 %}原帖 {{ loop.index }}{% else %}查看原帖{% endif %}
+                                                                                        {{ link.name }}
                                                                                     </a>
-                                                                                    {% endif %}
                                                                                 {% endfor %}
-                                                                            {% endif %}
-                                                                            
-                                                                            {% for link in release.download_links %}
-                                                                                <a href="{{ link.url }}" target="_blank" rel="noopener" 
-                                                                                   class="inline-flex items-center text-xs font-medium text-unifi-blue hover:text-unifi-darkblue border border-unifi-blue hover:bg-unifi-blue/5 rounded px-2 py-1 transition duration-200">
-                                                                                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                                                                                    </svg>
-                                                                                    {{ link.name }}
-                                                                                </a>
-                                                                            {% endfor %}
-                                                                        </div>
-                                                                    {% endif %}
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    {% endfor %}
+                                                        {% endfor %}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <!-- 非APP产品按版本类型显示内容 -->
+                            {% for version_type in ['GA', 'RC', 'Beta', 'Alpha'] %}
+                                {% if version_type in organized_data[product_line] %}
+                                    <div class="version-content p-4" 
+                                         id="content-{{ product_line }}-{{ version_type }}"
+                                         style="display: {% if loop.first %}block{% else %}none{% endif %};">
+                                        
+                                        <!-- 年份分组 -->
+                                        {% for year in organized_data[product_line][version_type]|sort(reverse=true) %}
+                                            <div class="mb-6">
+                                                <div class="year-header cursor-pointer flex items-center bg-gray-50 p-3 rounded-lg mb-2 hover:bg-gray-100 transition duration-200">
+                                                    <svg class="year-arrow w-5 h-5 mr-2 text-unifi-blue transform transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    <h3 class="text-lg font-semibold">{{ year }}</h3>
+                                                    <span class="ml-2 bg-unifi-blue text-white px-2 py-0.5 rounded-full text-xs">
+                                                        {{ organized_data[product_line][version_type][year]|length }}
+                                                    </span>
+                                                </div>
+                                                
+                                                <div class="year-content ml-2">
+                                                    <!-- 发布时间轴 -->
+                                                    <div class="relative border-l-4 border-unifi-blue pl-8 ml-3">
+                                                        {% for release in organized_data[product_line][version_type][year] %}
+                                                            <div class="relative mb-8">
+                                                                <!-- 时间轴节点 -->
+                                                                <div class="absolute -left-11 mt-3.5">
+                                                                    <div class="w-5 h-5 rounded-full bg-unifi-blue border-4 border-white shadow"></div>
+                                                                </div>
+                                                                
+                                                                <!-- 发布卡片 -->
+                                                                <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition duration-200 overflow-hidden">
+                                                                    <div class="border-b border-gray-100 px-4 py-3 flex justify-between items-center bg-gray-50">
+                                                                        <div>
+                                                                            {% if release.is_merged %}
+                                                                                <h4 class="font-semibold text-lg">{{ release.display_title }}</h4>
+                                                                            {% else %}
+                                                                                <h4 class="font-semibold text-lg">{{ release.product_name }}</h4>
+                                                                            {% endif %}
+                                                                            <div class="text-sm text-gray-500">{{ release.date }}</div>
+                                                                        </div>
+                                                                        <div class="flex items-center">
+                                                                            <span class="bg-unifi-blue text-white rounded-full px-3 py-1 text-xs font-medium">
+                                                                                {{ release.version }}
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="p-4">
+                                                                        {% if release.compatible_devices and release.compatible_devices|length > 1 %}
+                                                                            <div class="mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                                                                                <div class="text-sm font-medium text-unifi-blue mb-1">适配设备 ({{ release.compatible_devices|length }}):</div>
+                                                                                <div class="flex flex-wrap gap-1">
+                                                                                    {% for device in release.compatible_devices %}
+                                                                                        <span 
+                                                                                            class="device-selector bg-white text-gray-800 text-xs px-2 py-1 rounded border cursor-pointer transition-colors duration-200 {% if loop.first %}border-unifi-blue bg-blue-50 selected-device{% else %}border-gray-200 hover:border-unifi-blue hover:bg-blue-50{% endif %}"
+                                                                                            data-device-index="{{ loop.index0 }}"
+                                                                                            data-release-id="{{ release.product_line }}-{{ release.version_type }}-{{ release.year }}-{{ release.version|replace('.', '-') }}">
+                                                                                            {{ device }}
+                                                                                        </span>
+                                                                                    {% endfor %}
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                        
+                                                                        {% if release.is_merged and release.combined_notes %}
+                                                                            <div class="mb-4 text-sm text-gray-700">
+                                                                                <div class="font-medium text-lg mb-2">版本说明</div>
+                                                                                
+                                                                                {% for note_entry in release.combined_notes %}
+                                                                                    <div class="release-note-content mb-4 bg-blue-50 p-3 rounded-lg {% if not loop.first %}hidden{% endif %}"
+                                                                                         data-device-index="{{ loop.index0 }}"
+                                                                                         data-release-id="{{ release.product_line }}-{{ release.version_type }}-{{ release.year }}-{{ release.version|replace('.', '-') }}">
+                                                                                        <div class="device-name font-semibold text-unifi-blue mb-2">{{ release.compatible_devices[loop.index0] }}</div>
+                                                                                        <div class="whitespace-pre-line">{{ note_entry.notes }}</div>
+                                                                                    </div>
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        {% elif release.notes %}
+                                                                            <div class="mb-4 text-sm text-gray-700 release-notes">
+                                                                                {{ release.notes|truncate(300) }}
+                                                                                {% if release.notes|length > 300 %}
+                                                                                    <button class="text-unifi-blue hover:text-unifi-darkblue expand-notes">显示更多</button>
+                                                                                    <div class="hidden full-notes mt-2">
+                                                                                        {{ release.notes }}
+                                                                                    </div>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        {% endif %}
+                                                                        
+                                                                        {% if release.download_links or release.source_urls %}
+                                                                            <div class="flex flex-wrap gap-2 mt-3">
+                                                                                {% if release.source_urls and release.source_urls|length > 0 %}
+                                                                                    {% for url in release.source_urls %}
+                                                                                        {% if url %}
+                                                                                        <a href="{{ url }}" target="_blank" rel="noopener" 
+                                                                                           class="inline-flex items-center text-xs font-medium text-green-600 hover:text-green-800 border border-green-600 hover:bg-green-50 rounded px-2 py-1 transition duration-200">
+                                                                                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                                                                                            </svg>
+                                                                                            {% if release.source_urls|length > 1 %}原帖 {{ loop.index }}{% else %}查看原帖{% endif %}
+                                                                                        </a>
+                                                                                        {% endif %}
+                                                                                    {% endfor %}
+                                                                                {% endif %}
+                                                                                
+                                                                                {% for link in release.download_links %}
+                                                                                    <a href="{{ link.url }}" target="_blank" rel="noopener" 
+                                                                                       class="inline-flex items-center text-xs font-medium text-unifi-blue hover:text-unifi-darkblue border border-unifi-blue hover:bg-unifi-blue/5 rounded px-2 py-1 transition duration-200">
+                                                                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                                                                        </svg>
+                                                                                        {{ link.name }}
+                                                                                    </a>
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </section>
             {% endif %}
