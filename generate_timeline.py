@@ -14,6 +14,7 @@ from pymongo import MongoClient
 from jinja2 import Template
 from dotenv import load_dotenv
 import re
+from jinja2 import Environment, FileSystemLoader
 
 # 加载环境变量
 load_dotenv()
@@ -27,91 +28,106 @@ logger = logging.getLogger(__name__)
 
 # 产品线映射关系，根据标签和产品名称进行分类
 PRODUCT_LINE_MAPPING = {
-    # APP
-    'unifi-protect-app': ['protect app', 'protect ios', 'protect android'],
-    'unifi-app': ['unifi app', 'unifi ios', 'unifi android', 'mobile app', 'phone app'],
-    'wifiman-app': ['wifiman app', 'wifiman ios', 'wifiman android', 'wifiman mobile app', 'wifiman phone app'],
-
-    # UniFi OS 和 Network 产品线（分开）
-    'unifi-os': ['unifi os', 'unifi console', 'dream os', 'udm os', 'udm firmware', 'dream firmware'],
-    'unifi-network': ['unifi network application', 'unifi network app', 'controller', 'network management', 'network controller'],
-    'unifi-switch': ['switch', 'usw', 'flex switch', 'enterprise switch', 'poe switch'],
-    'unifi-gateway': ['gateway', 'usg', 'security gateway', 'routing', 'dream router', 'dream machine', 'udr', 'udm'],
-    'unifi-ap': ['access point', 'uap', 'wifi', 'wireless', 'u6', 'nanohd', 'flexhd', 'ac-lite', 'ac-pro'],
-    'unifi-cloud': ['cloud key', 'uck', 'cloud gateway', 'console'],
-    'unifi-protect': ['unifi protect application'],
+    # ===== Platform 平台 =====
+    'unifi-os': ['unifi os', 'unifi console', 'dream os', 'udm os', 'dream machine os', 'unifi os console', 'uisp os'],
+    'unifi-network-app': ['unifi network application', 'unifi network app', 'controller', 'network management', 'network controller', 'uap controller', 'unifi sdn'],
+    'unifi-protect-app': ['unifi protect application', 'unifi protect app', 'unifi protect server', 'protect controller', 'video controller'],
+    'unifi-access-app': ['access application', 'access app', 'access controller', 'door controller', 'identity controller'],
+    'unifi-talk-app': ['talk application', 'talk app', 'talk controller', 'voice controller', 'phone controller'],
+    'unifi-led-app': ['led application', 'led controller', 'led app', 'lighting controller'],
+    'unifi-connect-app': ['connect application', 'connect app', 'connect controller', 'sense controller', 'iot controller'],
+    'unifi-drive-app': ['drive application', 'drive app', 'storage controller', 'backup controller'],
+    'unifi-platform-other': ['security advisory', 'security bulletin', 'advisory bulletin', 'platform advisory'],
     
-    # 其他 UniFi 产品线
-    'unifi-protect-firmware': ['protect', 'camera', 'g4', 'g3', 'doorbell', 'viewport', 'nvr', 'unvr', 'video'],
-    'unifi-access': ['access', 'door', 'smart lock', 'hub', 'identity'],
-    'unifi-talk': ['talk', 'phone', 'voip'],
-    'unifi-led': ['led', 'light', 'lighting'],
-    'unifi-connect': ['connect', 'sense', 'sensor', 'uid'],
+    # ===== 设备产品线 =====
+    'unifi-switch': ['switch', 'usw', 'flex switch', 'enterprise switch', 'poe switch', 'switch firmware', 'usw firmware'],
+    'unifi-gateway': ['gateway', 'usg', 'security gateway', 'routing', 'dream router', 'dream machine', 'udr', 'udm', 'lte', 'unifi lte', 'udm firmware', 'dream firmware', 'gateway firmware', 'usg firmware'],
+    'unifi-ap': ['access point', 'uap', 'wifi', 'wireless', 'u6', 'nanohd', 'flexhd', 'ac-lite', 'ac-pro', 'access point firmware', 'uap firmware', 'ap firmware'],
+    'unifi-cloud': ['cloud key', 'uck', 'cloud gateway', 'console', 'ck', 'cloudkey firmware'],
+    'unifi-protect': ['protect', 'camera', 'g4', 'g3', 'doorbell', 'viewport', 'nvr', 'unvr', 'video', 'camera firmware', 'g4 firmware', 'g3 firmware', 'doorbell firmware', 'viewport firmware'],
+    'unifi-access': ['access', 'door', 'smart lock', 'hub', 'identity', 'access hub firmware', 'door firmware', 'smart lock firmware'],
+    'unifi-talk': ['talk', 'phone', 'voip', 'phone firmware', 'talk hardware firmware'],
+    'unifi-led': ['led', 'light', 'lighting', 'led hardware firmware', 'light firmware'],
+    'unifi-connect': ['connect', 'sense', 'sensor', 'uid', 'sense firmware', 'sensor firmware'],
     
-    # Design Center 产品线
-    'design-center': ['design center', 'innerspace', 'design', 'planner'],
+    # ===== APP & Tools 应用与工具 =====
+    'unifi-app': ['unifi app', 'unifi ios', 'unifi android', 'unifi mobile'],
+    'protect-app': ['protect app', 'protect ios', 'protect android', 'protect mobile'],
+    'wifiman-app': ['wifiman app', 'wifiman ios', 'wifiman android', 'WiFiman Desktop', 'wifiman for desktop'],
+    'design-center': ['unifi design center', 'unifi innerspace'],
     
-    # airMAX 产品线
+    # ===== 其他产品线 =====
     'airmax': ['airmax', 'nanostation', 'litebeam', 'powerbeam', 'rocket', 'prism', 'aircube', '60ghz'],
-    
-    # airFiber 产品线
     'airfiber': ['airfiber', 'ltu', 'gigabeam'],
-    
-    # 其他产品线
     'edgemax': ['edgerouter', 'edgeswitch', 'edgepoint', 'edgemax'],
     'amplifi': ['amplifi', 'alien', 'mesh'],
     'ufiber': ['ufiber', 'fiber'],
-    'uisp': ['uisp', 'unms', 'isp design', 'isp-app'],
+    'uisp': ['uisp', 'unms', 'isp design', 'isp-app', 'uisp design center','isp design center'],
     
-    # 其他未分类的 Unifi 产品
+    # 未分类的 Unifi 产品
     'unifi-other': ['unifi']  # 放在最后作为兜底分类
+}
+
+# 产品线分组（按照高级分类组织）
+PRODUCT_LINE_GROUPS = {
+    'Platform': [
+        'unifi-os', 'unifi-network-app', 'unifi-protect-app', 'unifi-access-app', 
+        'unifi-talk-app', 'unifi-led-app', 'unifi-connect-app', 'unifi-drive-app', 'unifi-platform-other'
+    ],
+    'UniFi Devices': [
+        'unifi-switch', 'unifi-gateway', 'unifi-ap', 'unifi-cloud', 'unifi-protect',
+        'unifi-access', 'unifi-talk', 'unifi-led', 'unifi-connect'
+    ],
+    'APP & Tools': [
+        'unifi-app', 'protect-app', 'wifiman-app', 'design-center'
+    ],
+    'Other Products': [
+        'airmax', 'airfiber', 'edgemax', 'amplifi', 'ufiber', 'uisp', 'unifi-other'
+    ]
 }
 
 # 产品线显示顺序
 PRODUCT_LINE_ORDER = [
-    'unifi-os',
-    'unifi-network',
-    'unifi-app',
-    'unifi-switch',
-    'unifi-gateway',
-    'unifi-ap',
-    'unifi-cloud',
-    'unifi-protect', 
-    'unifi-protect-firmware',
-    'protect-app',
-    'wifiman-app',
-    'design-center',
-    'unifi-access', 
-    'unifi-talk', 
-    'unifi-led', 
-    'unifi-connect',
-    'airmax',
-    'airfiber',
-    'edgemax',
-    'amplifi',
-    'ufiber',
-    'uisp',
-    'unifi-other'
+    # Platform
+    'unifi-os', 'unifi-network-app', 'unifi-protect-app', 'unifi-access-app', 
+    'unifi-talk-app', 'unifi-led-app', 'unifi-connect-app', 'unifi-drive-app', 'unifi-platform-other',
+    # UniFi Devices
+    'unifi-switch', 'unifi-gateway', 'unifi-ap', 'unifi-cloud', 'unifi-protect',
+    'unifi-access', 'unifi-talk', 'unifi-led', 'unifi-connect',
+    # APP & Tools
+    'unifi-app', 'protect-app', 'wifiman-app', 'design-center',
+    # Other Products
+    'airmax', 'airfiber', 'edgemax', 'amplifi', 'ufiber', 'uisp', 'unifi-other'
 ]
 
 # 产品线显示名称
 PRODUCT_LINE_LABELS = {
-    'unifi-os': 'UniFi OS',
-    'unifi-network': 'UniFi Network',
+    # Platform
+    'unifi-os': 'UniFi OS/Dream OS',
+    'unifi-network-app': 'UniFi Network Application',
+    'unifi-protect-app': 'UniFi Protect Application',
+    'unifi-access-app': 'UniFi Access Application',
+    'unifi-talk-app': 'UniFi Talk Application',
+    'unifi-led-app': 'UniFi LED Application',
+    'unifi-connect-app': 'UniFi Connect Application',
+    'unifi-drive-app': 'UniFi Drive Application',
+    'unifi-platform-other': 'Security & Platform Bulletins',
+    # UniFi Devices
     'unifi-switch': 'UniFi Switch',
     'unifi-gateway': 'UniFi Gateway',
     'unifi-ap': 'UniFi AP',
     'unifi-cloud': 'UniFi Cloud Key',
-    'unifi-protect': 'UniFi Protect',
-    'unifi-protect-firmware': 'UniFi Protect Firmware',
-    'unifi-access': 'UniFi Access',
-    'unifi-talk': 'UniFi Talk',
-    'unifi-led': 'UniFi LED',
-    'unifi-connect': 'UniFi Connect',
-    'protect-app': 'Protect APP',
-    'wifiman-app': 'Wifiman APP',
+    'unifi-protect': 'UniFi Protect Devices',
+    'unifi-access': 'UniFi Access Devices',
+    'unifi-talk': 'UniFi Talk Devices',
+    'unifi-led': 'UniFi LED Devices',
+    'unifi-connect': 'UniFi Connect Devices',
+    # APP & Tools
     'unifi-app': 'UniFi APP',
+    'protect-app': 'Protect APP',
+    'wifiman-app': 'WiFiMan APP',
     'design-center': 'Design Center',
+    # Other Products
     'airmax': 'airMAX',
     'airfiber': 'airFiber',
     'edgemax': 'EdgeMAX',
@@ -183,36 +199,126 @@ class ImprovedTimelineGenerator:
         tags_str = release.get('tags', '[]')
         product_name = release.get('product_name', '').lower()
         firmware_type = release.get('firmware_type', '').lower()
+        version = release.get('version', '').lower()
         
         try:
+            # 解析标签
             tags = json.loads(tags_str) if isinstance(tags_str, str) else tags_str
             if not isinstance(tags, list):
                 tags = []
-                
-            # 合并产品名称、固件类型和标签用于匹配
-            all_text = product_name + ' ' + firmware_type + ' ' + ' '.join([str(tag).lower() for tag in tags])
             
-            # 检查是否匹配产品线关键词
+            # 获取标签文本和产品名称文本
+            tags_text = ' '.join([str(tag).lower() for tag in tags])
+            name_text = product_name + ' ' + firmware_type
+            all_text = name_text + ' ' + tags_text
+            
+            # 调试日志
+            logger.debug(f"处理产品: {product_name}, 标签: {tags}")
+            
+            # 先检查是不是UniFi OS - 这是最高优先级
+            if ('unifi os' in all_text or 'dream os' in all_text or 'udm os' in all_text or 'console os' in all_text) and not 'ios' in all_text:
+                return 'unifi-os'
+            
+            # 直接从标签中获取产品线（精确匹配）
+            primary_tag = None
+            for tag in tags:
+                tag_lower = str(tag).lower()
+                if (tag_lower.startswith('unifi-') or tag_lower in ['edgemax', 'airmax', 'airfiber', 'amplifi', 'ufiber', 'uisp', 'design-center']):
+                    primary_tag = tag_lower
+                    break
+            
+            # 特定产品线的标签映射
+            if primary_tag:
+                # 处理标签直接匹配的情况
+                if primary_tag == 'unifi-gateway' or (primary_tag == 'unifi-gateway-cloudkey' and 'gateway' in all_text):
+                    # 如果是UniFi OS相关，优先归类为OS
+                    if ('unifi os' in all_text or 'dream os' in all_text or 'udm os' in all_text) and not 'ios' in all_text:
+                        return 'unifi-os'
+                    return 'unifi-gateway'
+                elif primary_tag == 'unifi-gateway-cloudkey' and not 'gateway' in all_text:
+                    return 'unifi-cloud'
+                elif primary_tag in ['unifi-cloud', 'unifi-cloudkey']:
+                    return 'unifi-cloud'
+                elif primary_tag in ['unifi-switch', 'unifi-switching', 'unifi-routing-switching']:
+                    return 'unifi-switch'
+                elif primary_tag == 'unifi-wireless':
+                    if 'lte' in all_text:
+                        return 'unifi-gateway'  # LTE产品归到Gateway
+                    else:
+                        return 'unifi-ap'
+                elif primary_tag in ['edgemax', 'airmax', 'airfiber', 'amplifi', 'ufiber', 'uisp', 'unms', 'design-center']:
+                    if primary_tag == 'unms':
+                        return 'uisp'
+                    return primary_tag
+            
+            # 使用PRODUCT_LINE_MAPPING进行精确匹配
+            # 1. 将all_text拆分为单词列表，用于精确匹配
+            words = re.findall(r'\b\w+\b', all_text.lower())
+            text_as_phrase = ' '.join(words)
+            
+            # 检查是否包含UniFi OS关键词（最高优先级）
+            for keyword in PRODUCT_LINE_MAPPING['unifi-os']:
+                # 将关键词转换为单词边界正则表达式模式
+                keyword_pattern = r'\b' + re.escape(keyword.lower()) + r'\b'
+                # 检查是否完整匹配且非iOS
+                if re.search(keyword_pattern, text_as_phrase) and not 'ios' in all_text:
+                    return 'unifi-os'
+            
+            # 2. 对每个产品线的关键词列表进行匹配
             for product_line, keywords in PRODUCT_LINE_MAPPING.items():
+                # 跳过已检查过的UniFi OS
+                if product_line == 'unifi-os':
+                    continue
+                
                 for keyword in keywords:
-                    if keyword.lower() in all_text:
+                    # 将关键词转换为单词边界正则表达式模式
+                    keyword_pattern = r'\b' + re.escape(keyword.lower()) + r'\b'
+                    
+                    # 检查关键词是否完整匹配（作为独立短语）
+                    if re.search(keyword_pattern, text_as_phrase):
+                        # 特殊情况处理：避免iOS被识别为OS
+                        if product_line == 'unifi-os' and 'ios' in all_text and not keyword.lower() in all_text:
+                            continue
+                        
+                        # 特殊情况处理：移动应用程序识别
+                        if 'ios' in all_text or 'android' in all_text:
+                            if product_line == 'unifi-app' or product_line == 'protect-app' or product_line == 'wifiman-app':
+                                return product_line
+                        
                         return product_line
             
-            # 特殊分类逻辑：把所有带有dream或udm的产品归类到unifi-gateway
-            if 'dream' in all_text or 'udm' in all_text:
-                return 'unifi-gateway'
+            # 从应用类型和设备类型进一步判断
+            # 检查是否为移动应用
+            if 'ios' in all_text or 'android' in all_text or 'mobile app' in all_text:
+                if 'protect' in all_text:
+                    return 'protect-app'
+                elif 'wifiman' in all_text:
+                    return 'wifiman-app'
+                elif 'unifi' in all_text:
+                    return 'unifi-app'
             
-            # 如果是unifi相关但未明确分类，归入unifi-other
+            # 产品线标识检查
             if 'unifi' in all_text:
+                # 如果包含UniFi标识，但无法精确匹配，归为其他UniFi产品
                 return 'unifi-other'
-                
-            # 如果仍然无法确定，使用第一个标签
-            if tags and len(tags) > 0:
-                return str(tags[0])
+            elif 'edgemax' in all_text or 'edgerouter' in all_text or 'edgeswitch' in all_text:
+                return 'edgemax'
+            elif 'airmax' in all_text:
+                return 'airmax'
+            elif 'airfiber' in all_text or 'ltu' in all_text:
+                return 'airfiber'
+            elif 'amplifi' in all_text:
+                return 'amplifi'
+            elif 'ufiber' in all_text:
+                return 'ufiber'
+            elif 'uisp' in all_text or 'unms' in all_text:
+                return 'uisp'
+            
+            # 完全无法识别的产品
+            return 'other'
         except Exception as e:
             logger.warning(f"解析产品线失败: {e}")
-        
-        return 'other'
+            return 'other'
     
     def determine_version_type(self, release):
         """确定版本类型(GA/RC/Beta/Alpha等)"""
@@ -644,24 +750,32 @@ class ImprovedTimelineGenerator:
         <div class="mb-6">
             <div class="bg-white rounded-lg shadow-md p-4">
                 <h2 class="text-xl font-semibold mb-3 text-unifi-blue">产品线筛选</h2>
-                <div class="flex flex-wrap gap-2">
+                <div class="mb-4">
                     <button 
                         data-product-line="all" 
                         class="product-line-filter bg-unifi-darkblue text-white px-3 py-1.5 rounded hover:bg-unifi-blue transition duration-200 text-sm font-medium active">
                         全部产品
                         <span class="ml-1 bg-white/30 px-1.5 rounded-full text-xs">{{ stats.total_releases }}</span>
                     </button>
-                    {% for product_line in product_line_order %}
-                        {% if product_line in organized_data %}
-                            <button 
-                                data-product-line="{{ product_line }}" 
-                                class="product-line-filter bg-unifi-lightblue text-white px-3 py-1.5 rounded hover:bg-unifi-blue transition duration-200 text-sm font-medium">
-                                {{ product_line_labels[product_line] }}
-                                <span class="ml-1 bg-white/30 px-1.5 rounded-full text-xs">{{ stats.product_lines[product_line] }}</span>
-                            </button>
-                        {% endif %}
-                    {% endfor %}
                 </div>
+                
+                {% for group_name, product_lines in product_line_groups.items() %}
+                <div class="mb-3">
+                    <h3 class="text-md font-medium text-gray-700 mb-2">{{ group_name }}</h3>
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        {% for product_line in product_lines %}
+                            {% if product_line in organized_data %}
+                                <button 
+                                    data-product-line="{{ product_line }}" 
+                                    class="product-line-filter bg-unifi-lightblue text-white px-3 py-1.5 rounded hover:bg-unifi-blue transition duration-200 text-sm font-medium">
+                                    {{ product_line_labels[product_line] }}
+                                    <span class="ml-1 bg-white/30 px-1.5 rounded-full text-xs">{{ stats.product_lines[product_line] }}</span>
+                                </button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
 
@@ -715,7 +829,7 @@ class ImprovedTimelineGenerator:
                                                 </span>
                                             </div>
                                             
-                                            <div class="year-content ml-4">
+                                            <div class="year-content ml-2">
                                                 <!-- 发布时间轴 -->
                                                 <div class="relative border-l-4 border-unifi-blue pl-8 ml-3">
                                                     {% for release in organized_data[product_line][version_type][year] %}
@@ -984,48 +1098,53 @@ class ImprovedTimelineGenerator:
     
     def generate_timeline(self):
         """生成时间轴HTML文件"""
-        # 获取发布数据
-        releases = self.get_all_releases()
-        if not releases:
-            logger.error("没有获取到发布数据，无法生成时间轴")
-            return False
-        
-        # 处理发布数据
-        organized_data, stats, product_line_stats = self.process_releases(releases)
-        
-        # 创建HTML模板
-        html_template = self.create_template_files()
-        template = Template(html_template)
-        
-        # 准备模板变量
-        latest_release_date = "未知"
-        if releases and len(releases) > 0:
-            release_date = releases[0].get('release_date', '')
-            latest_release_date = self.format_date(release_date)
-        
-        template_vars = {
-            'organized_data': organized_data,
-            'stats': stats,
-            'product_line_stats': product_line_stats,
-            'product_line_order': [pl for pl in PRODUCT_LINE_ORDER if pl in organized_data],
-            'product_line_labels': PRODUCT_LINE_LABELS,
-            'version_type_labels': VERSION_TYPE_LABELS,
-            'latest_update': latest_release_date,
-            'current_year': datetime.now().year,
-            'generated_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        }
-        
-        # 渲染HTML
-        html_content = template.render(**template_vars)
-        
-        # 写入HTML文件
         try:
+            # 获取所有发布数据
+            releases = self.get_all_releases()
+            if not releases:
+                logger.error("没有发布数据，无法生成时间轴")
+                return False
+            
+            # 处理数据
+            organized_data, stats, product_line_stats = self.process_releases(releases)
+            
+            # 创建Jinja2环境
+            env = Environment(loader=FileSystemLoader('.'))
+            
+            # 添加模板
+            template_content = self.create_template_files()
+            template = env.from_string(template_content)
+            
+            # 找出最新更新日期
+            latest_date = "未知"
+            for release in releases:
+                if release.get('release_date'):
+                    date_str = self.format_date(release['release_date'])
+                    if date_str and date_str != "None":
+                        latest_date = date_str
+                        break
+            
+            # 渲染模板并保存到文件
+            html_output = template.render(
+                organized_data=organized_data,
+                stats=stats,
+                product_line_stats=product_line_stats,
+                product_line_order=PRODUCT_LINE_ORDER,
+                product_line_labels=PRODUCT_LINE_LABELS,
+                product_line_groups=PRODUCT_LINE_GROUPS,
+                version_type_labels=VERSION_TYPE_LABELS,
+                latest_update=latest_date
+            )
+            
             with open(self.html_file, 'w', encoding='utf-8') as f:
-                f.write(html_content)
-            logger.info(f"成功生成时间轴HTML文件: {self.html_file}")
+                f.write(html_output)
+            
+            logger.info(f"时间轴HTML文件已生成: {self.html_file}")
             return True
         except Exception as e:
-            logger.error(f"写入HTML文件失败: {e}")
+            logger.error(f"生成时间轴失败: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
             return False
     
     def run(self):
