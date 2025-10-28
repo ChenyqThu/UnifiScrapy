@@ -65,6 +65,7 @@ MONGO_DATABASE=unifi_releases
 
 运行爬虫获取产品发布信息：
 ```bash
+brew services start mongodb-community
 python run.py
 ```
 

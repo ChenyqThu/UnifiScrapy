@@ -47,6 +47,13 @@ def parse_args():
 
 def main():
     """主运行函数"""
+    # 强制清除代理环境变量
+    proxy_vars = ['HTTP_PROXY', 'HTTPS_PROXY', 'http_proxy', 'https_proxy']
+    for var in proxy_vars:
+        if var in os.environ:
+            logging.info(f"清除代理环境变量: {var}")
+            del os.environ[var]
+    
     # 解析命令行参数
     args = parse_args()
     

@@ -106,28 +106,9 @@ class GraphQLScraper:
             Dict[str, str]: HTTP请求头
         """
         return {
-            'authority': 'community.svc.ui.com',
-            'method': 'POST',
-            'path': '/',
-            'scheme': 'https',
-            'accept': '*/*',
-            'accept-encoding': 'gzip, deflate, br, zstd',
-            'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            'cache-control': 'no-cache',
-            'content-type': 'application/json',
-            'dnt': '1',
-            'origin': 'https://community.ui.com',
-            'pragma': 'no-cache',
-            'priority': 'u=1, i',
-            'referer': 'https://community.ui.com/',
-            'sec-ch-ua': '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'same-site',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
-            'x-frontend-version': datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+            'Content-Type': 'application/json',
+            'Accept': '*/*',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
     
     def fetch_all_releases(self, limit: int = 0, batch_size: int = 50) -> List[Dict[str, Any]]:
@@ -242,7 +223,8 @@ class GraphQLScraper:
                 headers=self.get_headers(),
                 json=payload,
                 verify=self.verify_ssl,
-                timeout=30
+                timeout=30,
+                proxies={}  # 显式禁用代理
             )
             
             # 检查状态码
@@ -464,7 +446,8 @@ fragment Content on Content {
                 headers=self.get_headers(),
                 json=payload,
                 verify=self.verify_ssl,
-                timeout=30
+                timeout=30,
+                proxies={}  # 显式禁用代理
             )
             
             # 检查状态码
